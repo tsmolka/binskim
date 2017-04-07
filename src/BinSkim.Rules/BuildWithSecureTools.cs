@@ -103,6 +103,14 @@ namespace Microsoft.CodeAnalysis.IL.Rules
             else
             {
                 minCompilerVersion = context.Policy.GetProperty(MinimumToolVersions)[MIN_COMPILER_VER];
+
+                if (minCompilerVersion == MinimumCfgCapableCompilerVersion &&
+                    !EnableControlFlowGuard.EnablesControlFlowGuard(context))
+                {
+                    // For non-CFG enabled binaries, we can drop the minimum compiler
+                    // version slightly. 
+                    minCompilerVersion = MinimumCompilerVersionForNonCfgBinaries;
+                }
             }
 
             TruncatedCompilandRecordList badModuleList = new TruncatedCompilandRecordList();
@@ -187,17 +195,10 @@ namespace Microsoft.CodeAnalysis.IL.Rules
 
         public static Version Minimum(Version lhs, Version rhs)
         {
-            if (lhs < rhs)
-            {
-                return lhs;
-            }
-            else
-            {
-                return rhs;
-            }
+            return (lhs < rhs) ? lhs : rhs;
         }
 
-        private static readonly Version MinimumCfgCapableCompilerVersion = new Version(17, 0, 65501, 17016);
+        private static readonly Version MinimumCfgCapableCompilerVersion = new Version(17, 0, 65501, 17030);
         private static readonly Version MinimumCompilerVersionForNonCfgBinaries = new Version(17, 0, 65501, 17015);
 
         private static StringToVersionMap BuildMinimumToolVersionsMap()

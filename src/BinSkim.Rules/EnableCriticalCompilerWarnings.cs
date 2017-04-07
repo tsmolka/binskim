@@ -106,10 +106,11 @@ namespace Microsoft.CodeAnalysis.IL.Rules
             TruncatedCompilandRecordList unknownLanguageModules = new TruncatedCompilandRecordList();
             TruncatedCompilandRecordList allWarningLevelLowModules = new TruncatedCompilandRecordList();
 
-            string exampleTooLowWarningCommandLine = null;
             int overallMinimumWarningLevel = Int32.MaxValue;
-            string exampleDisabledWarningCommandLine = null;
             List<int> overallDisabledWarnings = new List<int>();
+
+            string exampleTooLowWarningCommandLine = null;
+            string exampleDisabledWarningCommandLine = null;
 
             foreach (DisposableEnumerableView<Symbol> omView in di.CreateObjectModuleIterator())
             {
