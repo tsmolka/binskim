@@ -197,11 +197,14 @@ namespace Microsoft.CodeAnalysis.IL.Rules
             }
         }
 
+        private static readonly Version MinimumCfgCapableCompilerVersion = new Version(17, 0, 65501, 17016);
+        private static readonly Version MinimumCompilerVersionForNonCfgBinaries = new Version(17, 0, 65501, 17015);
+
         private static StringToVersionMap BuildMinimumToolVersionsMap()
         {
             var result = new StringToVersionMap();
 
-            result[MIN_COMPILER_VER] = new Version(17, 0, 65501, 17016);
+            result[MIN_COMPILER_VER] = MinimumCfgCapableCompilerVersion;
             result[MIN_XBOX_COMPILER_VER] = new Version(16, 0, 11886, 0);
 
             return result;
@@ -213,13 +216,6 @@ namespace Microsoft.CodeAnalysis.IL.Rules
             result["xboxkrnl.lib,C"] = new Version("1.0.0.0");
             result["xboxkrnl.lib,Cxx"] = new Version("1.0.0.0");
             result["xboxkrnl.lib,MASM"] = new Version("1.0.0.0");
-            result["adsiid.lib,C"] = new Version("15.0.30729.207");
-            result["ahadmin.lib,Cxx"] = new Version("15.0.30729.165");
-            result["amstrmid.lib,C"] = new Version("15.0.30729.207");
-            result["aux_ulib.lib,C"] = new Version("15.0.30729.207");
-            result["bits.lib,C"] = new Version("15.0.30729.207");
-            result["certidl.lib,C"] = new Version("15.0.30729.207");
-            result["clfsmgmt.lib,Cxx"] = new Version("15.0.30729.207");
             result["corguids.lib,C"] = new Version("16.0.30311.1");
             result["dinput8.lib,C"] = new Version("15.0.30729.165");
             result["dmoguids.lib,C"] = new Version("15.0.30729.207");
@@ -230,63 +226,6 @@ namespace Microsoft.CodeAnalysis.IL.Rules
             result["fileextd.lib,MASM"] = new Version("9.0.30729.165");
             result["fileextd.lib,C"] = new Version("15.0.30729.165");
             result["format.lib,Cxx"] = new Version("16.0.30311.1");
-            result["gdiplus.lib,Cxx"] = new Version("15.0.30729.165");
-            result["gpmuuid.lib,C"] = new Version("15.0.30729.165");
-            result["htmlhelp.lib,Cxx"] = new Version("15.0.30729.165");
-            result["iepmapi.lib,Cxx"] = new Version("15.0.30729.165");
-            result["ksguid.lib,C"] = new Version("15.0.30729.207");
-            result["ksuser.lib,C"] = new Version("15.0.30729.207");
-            result["locationapi.lib,Cxx"] = new Version("15.0.30729.207");
-            result["mbnapi_uuid.lib,C"] = new Version("15.0.30729.165");
-            result["mfuuid.lib,Cxx"] = new Version("15.0.30729.207");
-            result["mfuuid.lib,C"] = new Version("15.0.30729.207");
-            result["mmc.lib,Cxx"] = new Version("15.0.30729.165");
-            result["mmc.lib,C"] = new Version("15.0.30729.165");
-            result["mqoa.lib,C"] = new Version("15.0.30729.165");
-            result["msdasc.lib,C"] = new Version("15.0.30729.165");
-            result["mstask.lib,Cxx"] = new Version("15.0.30729.165");
-            result["msxml2.lib,C"] = new Version("15.0.30729.165");
-            result["msxml6.lib,C"] = new Version("15.0.30729.165");
-            result["muiload.lib,Cxx"] = new Version("15.0.30729.207");
-            result["muiload.lib,C"] = new Version("15.0.30729.207");
-            result["odbccp32.lib,C"] = new Version("15.0.30729.165");
-            result["oledb.lib,C"] = new Version("15.0.30729.165");
-            result["osptk.lib,C"] = new Version("15.0.30729.165");
-            result["photoacquireuid.lib,Cxx"] = new Version("15.0.30729.207");
-            result["portabledeviceguids.lib,Cxx"] = new Version("15.0.30729.207");
-            result["sapi.lib,C"] = new Version("15.0.30729.165");
-            result["sbtsv.lib,C"] = new Version("15.0.30729.207");
-            result["scrnsave.lib,C"] = new Version("15.0.30729.165");
-            result["scrnsavw.lib,C"] = new Version("15.0.30729.165");
-            result["searchsdk.lib,C"] = new Version("15.0.30729.207");
-            result["sensorsapi.lib,Cxx"] = new Version("15.0.30729.207");
-            result["shell32.lib,C"] = new Version("15.0.30729.207");
-            result["srclient.lib,Cxx"] = new Version("15.0.30729.165");
-            result["strmiids.lib,C"] = new Version("15.0.30729.207");
-            result["strsafe.lib,C"] = new Version("15.0.30729.165");
-            result["structuredquery.lib,C"] = new Version("15.0.30729.165");
-            result["svcguid.lib,C"] = new Version("15.0.30729.165");
-            result["taskschd.lib,C"] = new Version("15.0.30729.165");
-            result["transcodeimageuid.lib,Cxx"] = new Version("15.0.30729.165");
-            result["tspubplugincom.lib,C"] = new Version("15.0.30729.207");
-            result["unicows.lib,C"] = new Version("15.0.30729.165");
-            result["uuid.lib,C"] = new Version("15.0.30729.165");
-            result["uuid.lib,Cxx"] = new Version("15.0.30729.207");
-            result["vds_uuid.lib,C"] = new Version("15.0.30729.207");
-            result["vpccominterfaces.lib,C"] = new Version("15.0.30729.207");
-            result["vss_uuid.lib,C"] = new Version("15.0.30729.207");
-            result["wbemuuid.lib,C"] = new Version("15.0.30729.165");
-            result["wcmguid.lib,C"] = new Version("15.0.30729.165");
-            result["wiaguid.lib,C"] = new Version("15.0.30729.207");
-            result["windowscodecs.lib,Cxx"] = new Version("15.0.30729.207");
-            result["windowssideshowguids.lib,Cxx"] = new Version("15.0.30729.207");
-            result["winstrm.lib,C"] = new Version("15.0.30729.165");
-            result["wmcodecdspuuid.lib,C"] = new Version("15.0.30729.207");
-            result["workspaceax.lib,C"] = new Version("15.0.30729.207");
-            result["ws2_32.lib,C"] = new Version("15.0.30729.165");
-            result["wsbapp_uuid.lib,C"] = new Version("15.0.30729.165");
-            result["wuguid.lib,C"] = new Version("15.0.30729.165");
-            result["xaswitch.lib,Cxx"] = new Version("15.0.30729.165");
             result["comsupp.lib,Cxx"] = new Version("16.0.30319.1");
             result["comsuppd.lib,Cxx"] = new Version("16.0.30319.1");
             result["comsuppw.lib,Cxx"] = new Version("16.0.30319.1");
@@ -332,44 +271,6 @@ namespace Microsoft.CodeAnalysis.IL.Rules
             result["vcomp.lib,MASM"] = new Version("10.0.40219.1");
             result["vcompd.lib,MASM"] = new Version("10.0.40219.1");
             result["pgort.lib,MASM"] = new Version("10.0.30319.1");
-            result["atl.lib,C"] = new Version("16.0.30319.1");
-            result["atls.lib,C"] = new Version("16.0.30319.1");
-            result["atlsd.lib,C"] = new Version("16.0.30319.1");
-            result["mfc100.lib,C"] = new Version("16.0.30319.1");
-            result["mfc100u.lib,C"] = new Version("16.0.30319.1");
-            result["mfc100d.lib,C"] = new Version("16.0.30319.1");
-            result["mfc100ud.lib,C"] = new Version("16.0.30319.1");
-            result["mfcm100.lib,C"] = new Version("16.0.30319.1");
-            result["mfcm100d.lib,C"] = new Version("16.0.30319.1");
-            result["mfcm100u.lib,C"] = new Version("16.0.30319.1");
-            result["mfcm100ud.lib,C"] = new Version("16.0.30319.1");
-            result["mfcs100.lib,C"] = new Version("16.0.30319.1");
-            result["mfcs100d.lib,C"] = new Version("16.0.30319.1");
-            result["mfcs100u.lib,C"] = new Version("16.0.30319.1");
-            result["mfcs100ud.lib,C"] = new Version("16.0.30319.1");
-            result["nafxcw.lib,C"] = new Version("16.0.30319.1");
-            result["nafxcwd.lib,C"] = new Version("16.0.30319.1");
-            result["uafxcw.lib,C"] = new Version("16.0.30319.1");
-            result["uafxcwd.lib,C"] = new Version("16.0.30319.1");
-            result["atl.lib,Cxx"] = new Version("16.0.30319.1");
-            result["atls.lib,Cxx"] = new Version("16.0.30319.1");
-            result["atlsd.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfc100.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfc100u.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfc100d.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfc100ud.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcm100.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcm100d.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcm100u.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcm100ud.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcs100.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcs100d.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcs100u.lib,Cxx"] = new Version("16.0.30319.1");
-            result["mfcs100ud.lib,Cxx"] = new Version("16.0.30319.1");
-            result["nafxcw.lib,Cxx"] = new Version("16.0.30319.1");
-            result["nafxcwd.lib,Cxx"] = new Version("16.0.30319.1");
-            result["uafxcw.lib,Cxx"] = new Version("16.0.30319.1");
-            result["uafxcwd.lib,Cxx"] = new Version("16.0.30319.1");
 
             return result;
         }

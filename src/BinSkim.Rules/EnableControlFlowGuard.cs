@@ -135,7 +135,7 @@ namespace Microsoft.CodeAnalysis.IL.Rules
                         context.TargetUri.GetFileName()));
         }
 
-        private bool EnablesControlFlowGuard(BinaryAnalyzerContext context)
+        internal static bool EnablesControlFlowGuard(BinaryAnalyzerContext context)
         {
             PEHeader peHeader = context.PE.PEHeaders.PEHeader;
             if (((uint)peHeader.DllCharacteristics & IMAGE_DLLCHARACTERISTICS_CONTROLFLOWGUARD) == 0)
