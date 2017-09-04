@@ -5,12 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
+using System.Linq;
 using System.Reflection.PortableExecutable;
+
+using Dia2Lib;
 
 using Microsoft.CodeAnalysis.BinaryParsers.PortableExecutable;
 using Microsoft.CodeAnalysis.IL.Sdk;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.CodeAnalysis.Sarif.Driver;
+using Microsoft.CodeAnalysis.BinaryParsers.ProgramDatabase;
 
 namespace Microsoft.CodeAnalysis.IL.Rules
 {
@@ -45,7 +49,8 @@ namespace Microsoft.CodeAnalysis.IL.Rules
                     nameof(RuleResources.BA2008_Pass),
                     nameof(RuleResources.BA2008_Error),
                     nameof(RuleResources.NotApplicable_InvalidMetadata),
-                    nameof(RuleResources.BA2008_NotApplicable_UnsupportedKernelModeVersion)
+                    nameof(RuleResources.BA2008_NotApplicable_UnsupportedKernelModeVersion),
+                    nameof(RuleResources.BA2008_MissingCompilerFlags)
                 };
             }
         }
@@ -145,6 +150,8 @@ namespace Microsoft.CodeAnalysis.IL.Rules
                 RuleUtilities.BuildResult(ResultLevel.Pass, context, null,
                     nameof(RuleResources.BA2008_Pass),
                         context.TargetUri.GetFileName()));
+
+            CheckControlFlowGuardFlagsForModules(context);
         }
 
         private bool EnablesControlFlowGuard(BinaryAnalyzerContext context)
@@ -198,6 +205,53 @@ namespace Microsoft.CodeAnalysis.IL.Rules
                 }
             }
             return false;
+        }
+
+        private void CheckControlFlowGuardFlagsForModules(BinaryAnalyzerContext context)
+        {
+            PEHeader peHeader = context.PE.PEHeaders.PEHeader;
+
+            if (context.Pdb == null)
+            {
+                Errors.LogExceptionLoadingPdb(context, context.PdbParseException);
+                return;
+            }
+
+            Pdb di = context.Pdb;
+            TruncatedCompilandRecordList disabledControlFlowGuardModules = new TruncatedCompilandRecordList();
+
+            foreach (DisposableEnumerableView<Symbol> omView in di.CreateObjectModuleIterator())
+            {
+                Symbol om = omView.Value;
+                ObjectModuleDetails omDetails = om.GetObjectModuleDetails();
+
+                // Detection applies to C/C++ produced by MS compiler only
+                if (omDetails.WellKnownCompiler != WellKnownCompilers.MicrosoftNativeCompiler)
+                {
+                    continue;
+                }
+
+                if (!om.CreateChildIterator(SymTagEnum.SymTagFunction).Any())
+                {
+                    // uninteresting...
+                    continue;
+                }
+
+                if (!String.IsNullOrEmpty(omDetails.CommandLine) && omDetails.ControlFlowGuardEnabled == false)
+                {
+                    string msg = "[Command line without /GUARD:CF \"" + omDetails.CommandLine + "\"]";
+                    disabledControlFlowGuardModules.Add(om.CreateCompilandRecordWithSuffix(msg));
+                }
+            }
+
+            if (!disabledControlFlowGuardModules.Empty)
+            {
+                context.Logger.Log(this,
+                    RuleUtilities.BuildResult(ResultLevel.Warning, context, null,
+                        nameof(RuleResources.BA2008_MissingCompilerFlags),
+                        context.TargetUri.GetFileName(),
+                        disabledControlFlowGuardModules.CreateTruncatedObjectList()));
+            }
         }
     }
 }

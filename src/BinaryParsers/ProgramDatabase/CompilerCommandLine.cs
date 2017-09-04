@@ -56,6 +56,11 @@ namespace Microsoft.CodeAnalysis.BinaryParsers.ProgramDatabase
         public readonly bool WarningsAsErrors;
 
         /// <summary>
+        /// Whether or not this command line contains flag that enables control flow guard.
+        /// </summary>
+        public readonly bool ControlFlowGuardEnabled; 
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CompilerCommandLine"/> struct from a raw PDB-supplied command line.
         /// </summary>
         /// <param name="commandLine">The raw command line from the PDB.</param>
@@ -68,6 +73,7 @@ namespace Microsoft.CodeAnalysis.BinaryParsers.ProgramDatabase
             this.Raw = commandLine ?? "";
             this.WarningLevel = 0;
             this.WarningsAsErrors = false;
+            this.ControlFlowGuardEnabled = false;
             var explicitWarnings = new Dictionary<int, WarningState>();
             foreach (string argument in ArgumentSplitter.CommandLineToArgvW(commandLine))
             {
@@ -157,6 +163,26 @@ namespace Microsoft.CodeAnalysis.BinaryParsers.ProgramDatabase
 
                         explicitWarnings[warningNumber] = state;
                         break;
+                }
+                
+                if (argument.Length > 6 && argument.Substring(1, 5).Equals("guard", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    // e.g. /guard:cf, -guard:cf or /GUARD:CF
+                    if (argument.Substring(6).Equals(":cf", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        this.ControlFlowGuardEnabled = true;
+                    }
+                    // e.g. -guard4 used in objects from MSVCRT.lib
+                    // TODO: investigate whether this flag really enabled CFG
+                    else if (argument[6] == '4')
+                    {
+                        this.ControlFlowGuardEnabled = true;
+                    }
+                    // e.g. /guard:cf-, -guard:cf- or /GUARD:CF-
+                    else if (argument.Substring(6).Equals(":cf-", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        this.ControlFlowGuardEnabled = false;
+                    }
                 }
             }
 

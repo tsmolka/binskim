@@ -306,7 +306,8 @@
             "Pass": "'{0}' enables the control flow guard mitigation. As a result, the operating system will force an application to close if an attacker is able to redirect execution in the component to an unexpected location.",
             "Error": "'{0}' does not enable the control flow guard (CFG) mitigation. To resolve this issue, pass /GUARD:CF on both the compiler and linker command lines. Binaries also require the /DYNAMICBASE linker option in order to enable CFG.",
             "NotApplicable_InvalidMetadata": "'{0}' was not evaluated for check '{1}' as the analysis is not relevant based on observed metadata: {2}.",
-            "NotApplicable_UnsupportedKernelModeVersion": "'{0}' is a kernel mode portable executable compiled for a version of Windows that does not support the control flow guard feature for kernel mode binaries."
+            "NotApplicable_UnsupportedKernelModeVersion": "'{0}' is a kernel mode portable executable compiled for a version of Windows that does not support the control flow guard feature for kernel mode binaries.",
+            "MissingCompilerFlags": "'{0}' contains one or more modules compiled without /GUARD:CF. {1}"
           },
           "defaultLevel": "warning",
           "helpUri": "https://github.com/microsoft/binskim",

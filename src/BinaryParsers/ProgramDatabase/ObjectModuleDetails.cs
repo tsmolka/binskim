@@ -70,6 +70,14 @@ namespace Microsoft.CodeAnalysis.BinaryParsers.ProgramDatabase
             }
         }
 
+        public bool? ControlFlowGuardEnabled
+        {
+            get
+            {
+                return _commandLine.ControlFlowGuardEnabled;
+            }
+        }
+
         /// <summary>
         /// The version of the compiler backend
         /// </summary>
